@@ -142,6 +142,8 @@ update_game_path() {
     echo "Selected folder: $selected_folder"
     ets2_path=$selected_folder
     ets2_path=$(winepath -w "$ets2_path")
+    ets2_path=$(echo "$ets2_path" | sed 's/U:/Z:/')
+    ets2_path=$(echo "$ets2_path" | sed 's|Z:|Z:\home\\'"$USER"'|')
 
     json_file=$WINEPREFIX/dosdevices/c:/users/$USER/AppData/Roaming/TruckersMP/launcher-options.json
     jq --arg new_path "$ets2_path" '.games.ets2.path = $new_path' "$json_file" > tmp.$$.json && mv tmp.$$.json "$json_file"

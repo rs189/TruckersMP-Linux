@@ -67,11 +67,6 @@ check_dependencies() {
 }
 
 check_umu_proton() {
-    if [ ! -f "/usr/bin/umu-run" ]; then
-        error "UMU-Launcher-1.1.4 or higher is required. Please download the UMU-Launcher from the website and re-run the script"
-        xdg-open "https://github.com/Open-Wine-Components/umu-launcher/releases/tag/1.1.4"
-        exit 1
-    fi
     if [ ! -f "$WINESERVER" ] || [ ! -f "$WINE64" ]
     then
         info "UMU-Proton-9.0 or higher is required. Downloading UMU-Proton-9.0-3.2"
@@ -107,14 +102,73 @@ install_winetricks() {
 
 create_desktop_entry() {
     local desktop_path="$HOME/.local/share/applications/wine/Programs/TruckersMP/TruckersMP.desktop"
-    local exec="env WINEPREFIX=\"$WINEPREFIX\" wine C:\\\\users\\\\$USER\\\\AppData\\\\Roaming\\\\Microsoft\\\\Windows\\\\Start\\\\ Menu\\\\Programs\\\\TruckersMP\\\\TruckersMP.lnk"
+    #local exec="env WINEPREFIX=\"$WINEPREFIX\" wine C:\\\\users\\\\$USER\\\\AppData\\\\Roaming\\\\Microsoft\\\\Windows\\\\Start\\\\ Menu\\\\Programs\\\\TruckersMP\\\\TruckersMP.lnk"
+
+    # Create a shell script to launch the TruckersMP launcher
+    cat <<EOF > "$TRUCKERSMP_PATH/truckersmp-launcher.sh"
+#!/bin/bash
+export WINEPREFIX="$WINEPREFIX"
+export WINESERVER="$WINESERVER"
+export WINE64="$WINE64"
+export WINEFSYNC=1
+export TRUCKERSMP_PATH="$TRUCKERSMP_PATH"
+
+cd "\$TRUCKERSMP_PATH"
+\$WINESERVER -k
+\$WINE64 "\$TRUCKERSMP_PATH/TruckersMP-Launcher.exe" &
+TRUCKERSMP_LAUNCHER_PID=\$!
+
+# Function to launch winediscordipcbridge
+launch_ipcbridge() {
+    \$WINE64 \$TRUCKERSMP_PATH/winediscordipcbridge.exe &
+    IPCBRIDGE_PID=\$!
+}
+
+exit_count=0
+max_exit_count=3
+
+while true; do
+    if ! kill -0 \$IPCBRIDGE_PID 2>/dev/null; then
+        echo "winediscordipcbridge.exe not running, restarting..."
+        launch_ipcbridge
+    fi
+
+    if ps aux | grep -i "eurotrucks2.exe" > /dev/null; then
+        exit_count=0
+    fi
+
+    if ps aux | ps aux | grep "TruckersMP-Launcher.exe" > /dev/null; then
+        exit_count=0
+    fi
+
+    if ! ps aux | grep -i "eurotrucks2.exe" > /dev/null && ! ps aux | grep "TruckersMP-Launcher.exe" > /dev/null; then
+        exit_count=$((exit_count + 1))
+        echo "Both applications have exited \$exit_count times consecutively."
+        
+        if [ \$exit_count -ge \$max_exit_count ]; then
+            echo "Both applications have exited 3 times consecutively. Exiting loop..."
+            kill 2>/dev/null
+            break
+        fi
+    else
+        exit_count=0
+    fi
+
+    sleep 5
+done
+
+echo "TruckersMP Launcher has exited, killing winediscordipcbridge.exe"
+kill \$IPCBRIDGE_PID 2>/dev/null
+
+EOF
+    chmod +x "$TRUCKERSMP_PATH/truckersmp-launcher.sh"
     
     echo "Creating desktop file"
     mkdir -p "$(dirname "$desktop_path")"
     cat <<EOF > "$desktop_path"
 [Desktop Entry]
 Name=TruckersMP
-Exec=$exec
+Exec=truckersmp-launcher.sh
 Type=Application
 StartupNotify=true
 Comment=Launcher for TruckersMP
@@ -141,9 +195,11 @@ update_game_path() {
 
     echo "Selected folder: $selected_folder"
     ets2_path=$selected_folder
+    # Add bin\\win_x64\\eurotrucks2.exe
+    ets2_path="$ets2_path/bin/win_x64/eurotrucks2.exe"
     ets2_path=$(winepath -w "$ets2_path")
     ets2_path=$(echo "$ets2_path" | sed 's/U:/Z:/')
-    ets2_path=$(echo "$ets2_path" | sed 's|Z:|Z:\home\\'"$USER"'|')
+    ets2_path=$(echo "$ets2_path" | sed 's|Z:|Z:\\home\\'"$USER"'|')
 
     json_file=$WINEPREFIX/dosdevices/c:/users/$USER/AppData/Roaming/TruckersMP/launcher-options.json
     jq --arg new_path "$ets2_path" '.games.ets2.path = $new_path' "$json_file" > tmp.$$.json && mv tmp.$$.json "$json_file"
@@ -186,13 +242,20 @@ main() {
         sleep 1
     done
 
+    # Download winediscordipcbridge.exe and place it in the wine prefix root
+    log "INFO" "Downloading WineDiscordIPCBridge"
+    wget https://raw.githubusercontent.com/rs189/truckersmp-linux/main/winediscordipcbridge.exe -P "$TRUCKERSMP_PATH"
+
     create_desktop_entry
 
     update_game_path
 
-    echo "Starting TruckersMP"
+    echo "Starting TruckersMP Launcher"
     $WINESERVER -k
-    $WINE64 "$TRUCKERSMP_PATH/TruckersMP-Launcher.exe"
+    #$WINE64 "$TRUCKERSMP_PATH/TruckersMP-Launcher.exe"
+    echo $TRUCKERSMP_PATH
+    chmod +x $TRUCKERSMP_PATH/truckersmp-launcher.sh
+    bash $TRUCKERSMP_PATH/truckersmp-launcher.sh
 
     log "INFO" "TruckersMP installation completed"
 }

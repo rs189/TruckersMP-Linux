@@ -12,8 +12,7 @@ A bash script to automate the installation and configuration of TruckersMP for E
 
 ### System Dependencies
 - Wine 9.15 or higher
-- UMU-Proton-9.0-3.2 or higher
-- UMU-Launcher 1.1.4 or higher
+- UMU-Proton-9.0-3.2 or higher (Installed automatically)
 - zenity
 - wget
 - jq
@@ -39,12 +38,11 @@ During installation, you will be prompted to select your Euro Truck Simulator 2 
 Common issues and solutions:
 - If the installer fails to start, ensure all dependencies are installed.
 - If Wine version check fails, upgrade Wine to version 9.15 or higher.
-- If UMU Launcher is not found, ensure it's installed.
 
 ## Uninstallation
 
 To uninstall TruckersMP:
-1. Uninstall TruckersMP Launcher using Winetricks.
+1. Uninstall TruckersMP Launcher using Protontricks.
 2. Delete the desktop entry from `~/.local/share/applications/wine/Programs/TruckersMP/`.
 
 # Licence

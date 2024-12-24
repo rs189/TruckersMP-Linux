@@ -6,7 +6,8 @@ A bash script to automate the installation and configuration of TruckersMP for E
 
 - Automatic installation of TruckersMP inside of Euro Truck Simulator 2 prefix using Wine and UMU-Proton.
 - Automatic configuration of path to the Euro Truck Simulator 2 inside of TruckersMP launcher.
-- Automatic desktop entry creation
+- Automatic desktop entry creation.
+- Discord Rich Presence support.
 
 ## Requirements
 
@@ -36,8 +37,8 @@ During installation, you will be prompted to select your Euro Truck Simulator 2 
 ## Troubleshooting
 
 Common issues and solutions:
-- If the installer fails to start, ensure all dependencies are installed.
-- If Wine version check fails, upgrade Wine to version 9.15 or higher.
+- If the installer doesn't start, please install all dependencies.
+- If the Wine version check fails, upgrade Wine to version 9.15 or higher.
 
 ## Uninstallation
 

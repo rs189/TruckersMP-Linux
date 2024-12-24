@@ -28,7 +28,7 @@ A bash script to automate the installation and configuration of TruckersMP for E
 
 2. Run the installer:
    ```bash
-   bash -c "$(wget -qO- https://github.com/rs189/TruckersMP-Linux/raw/main/truckersmp-installer.sh)"
+   wget -qO truckersmp-installer.sh https://github.com/rs189/TruckersMP-Linux/raw/main/truckersmp-installer.sh && chmod +x truckersmp-installer.sh && ./truckersmp-installer.sh
    ```
 
 During installation, you will be prompted to select your Euro Truck Simulator 2 installation directory

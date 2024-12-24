@@ -168,7 +168,7 @@ EOF
     cat <<EOF > "$desktop_path"
 [Desktop Entry]
 Name=TruckersMP
-Exec=truckersmp-launcher.sh
+Exec=$TRUCKERSMP_PATH/truckersmp-launcher.sh
 Type=Application
 StartupNotify=true
 Comment=Launcher for TruckersMP

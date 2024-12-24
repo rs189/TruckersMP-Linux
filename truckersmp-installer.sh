@@ -218,6 +218,8 @@ main() {
 
     echo "Installing TruckersMP"
 
+    install_winetricks
+
     $WINESERVER -k
     ./winetricks --force -q corefonts 
     $WINESERVER -k

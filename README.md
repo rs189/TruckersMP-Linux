@@ -1,11 +1,15 @@
-# TruckersMP Installer for Linux
+<div align="center">
 
-A bash script to automate the installation and configuration of TruckersMP for Euro Truck Simulator 2 on Linux using UMU-Proton and Wine.
+<img src="https://truckersmp.com/assets/img/truckersmp-logo-sm.png" width="369" height="80"/>
+
+</div>
+
+## A Bash and Python script packaged as an AppImage to automate the installation and configuration of TruckersMP for Euro Truck Simulator 2 on Linux, utilising UMU-Proton and Wine.
 
 ## Features
 
-- Automatic installation of TruckersMP inside of Euro Truck Simulator 2 prefix using Wine and UMU-Proton.
-- Automatic configuration of path to the Euro Truck Simulator 2 inside of TruckersMP launcher.
+- Automatic TruckersMP installation inside Euro Truck Simulator 2 prefix using UMU-Proton and Wine.
+- Automatic Euro Truck Simulator 2 path configuration within the TruckersMP launcher.
 - Automatic desktop entry creation.
 - Discord Rich Presence support.
 
@@ -23,28 +27,30 @@ A bash script to automate the installation and configuration of TruckersMP for E
 
 ## Installation
 
-1. Download the TruckersMP installer from the official website:
-   - Visit the [TruckersMP Download page.](https://truckersmp.com/download)
-   - Save the installer as `TruckersMP-Setup.exe` in the same directory as the script.
-
-2. Run the installer:
-   ```bash
-   wget -qO truckersmp-installer.sh https://github.com/rs189/TruckersMP-Linux/raw/main/truckersmp-installer.sh && chmod +x truckersmp-installer.sh && ./truckersmp-installer.sh
-   ```
-
-During installation, you will be prompted to select your Euro Truck Simulator 2 installation directory
+Run the AppImage installer provided in the [releases](https://github.com/rs189/TruckersMP-Linux/releases) section.
 
 ## Troubleshooting
 
 Common issues and solutions:
-- If the installer doesn't start, please install all dependencies.
-- If the Wine version check fails, upgrade Wine to version 9.15 or higher.
+- If the installer doesn't start, please install all required dependencies.
+- If the Wine version check fails, please upgrade Wine to version 9.15 or higher.
+
+For further troubleshooting, please run the installer from the terminal and provide the output.
 
 ## Uninstallation
 
 To uninstall TruckersMP:
 1. Uninstall TruckersMP Launcher using Protontricks.
 2. Delete the desktop entry from `~/.local/share/applications/wine/Programs/TruckersMP/`.
+
+## Development
+
+To build the AppImage installer, run the following commands:
+```bash
+git clone https://github.com/rs189/TruckersMP-Linux.git
+cd TruckersMP-Linux
+./package_appimage.sh
+```
 
 # Licence
 

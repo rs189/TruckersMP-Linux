@@ -1,0 +1,10 @@
+#!/bin/bash
+
+# Check if python3 is available in the system
+if ! command -v python3 &>/dev/null; then
+    echo "Error: python3 is not installed or not in the PATH"
+    exit 1
+fi
+
+# Run the app.py script with the system's python3
+python3 "$APPDIR/usr/bin/app.py"

@@ -1,0 +1,7 @@
+[Desktop Entry]
+Name=TruckersMP
+Exec=/usr/bin/python3 app.py
+Type=Application
+Categories=Application;
+StartupNotify=true
+Icon=truckersmp

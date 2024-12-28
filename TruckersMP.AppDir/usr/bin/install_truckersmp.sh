@@ -108,7 +108,7 @@ install_winetricks() {
     
     chmod +x "$script_path"
     $WINESERVER -k
-    # "$script_path" --force -q corefonts
+    "$script_path" --force -q corefonts
     $WINESERVER -k
 }
 

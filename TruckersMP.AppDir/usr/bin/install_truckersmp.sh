@@ -224,6 +224,10 @@ update_game_path() {
     jq --arg new_path "$ets2_path" '.games.ets2.path = $new_path' "$json_file" > tmp.$$.json && mv tmp.$$.json "$json_file"
     json_file2=$WINEPREFIX/dosdevices/c:/users/steamuser/AppData/Roaming/TruckersMP/launcher-options.json
     jq --arg new_path "$ets2_path" '.games.ets2.path = $new_path' "$json_file2" > tmp.$$.json && mv tmp.$$.json "$json_file2"
+
+    # Set the games.ets2.consoleOpts to ["-nointro", "-rdevice", "gl"]
+    jq --argjson new_opts '["-nointro", "-rdevice", "gl"]' '.games.ets2.consoleOpts = $new_opts' "$json_file" > tmp.$$.json && mv tmp.$$.json "$json_file"
+    jq --argjson new_opts '["-nointro", "-rdevice", "gl"]' '.games.ets2.consoleOpts = $new_opts' "$json_file2" > tmp.$$.json && mv tmp.$$.json "$json_file2"
 }
 
 main() {
@@ -264,6 +268,8 @@ main() {
 
     # Wait for the installer to finish and launch the app
     echo "Waiting for the launcher to start..."
+    timeout=3
+    elapsed=0
     while :; do
         if pgrep -f "TruckersMP-Launcher.exe" > /dev/null; then
             echo "Launcher detected. Closing it now."
@@ -271,6 +277,11 @@ main() {
             break
         fi
         sleep 1
+        elapsed=$((elapsed + 1))
+        if [ $elapsed -ge $timeout ]; then
+            echo "Timeout reached. Exiting loop."
+            break
+        fi
     done
 
     # Download winediscordipcbridge.exe and place it in the wine prefix root

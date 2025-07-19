@@ -6,5 +6,25 @@ if ! command -v python3 &>/dev/null; then
     exit 1
 fi
 
+# Check if pip is installed, try to bootstrap it with ensurepip if missing
+if ! python3 -m pip --version &>/dev/null; then
+    echo "pip not found, attempting to install using ensurepip..."
+    if python3 -m ensurepip --upgrade &>/dev/null; then
+        echo "pip installed successfully"
+    else
+        echo "Error: pip is not installed and could not be bootstrapped"
+        exit 1
+    fi
+fi
+
+# Check if PyQt5 is available, try to install if not
+if ! python3 -c "import PyQt5.QtCore" &>/dev/null; then
+    echo "PyQt5 not found, attempting to install..."
+    if ! python3 -m pip install --user PyQt5; then
+        echo "Error: Failed to install PyQt5"
+        exit 1
+    fi
+fi
+
 # Run the app.py script with the system's python3
 python3 "$APPDIR/usr/bin/app.py"
